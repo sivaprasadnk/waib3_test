@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  MapController? controller;
+  BaseMapController? controller;
 
   @override
   void initState() {
@@ -35,41 +35,68 @@ class _HomeScreenState extends State<HomeScreen> {
 
   showStartLocation(String loc) async {
     try {
-      if (startPoint != null) {
-        controller!.removeMarker(startPoint!);
-        // controller!.removeRoad(roadKey: roadKey)
-      }
+      debugPrint("showStartLocation");
+
       var locations = await addressSuggestion(loc);
       if (locations.isNotEmpty) {
-        startPoint = locations.first.point!;
+        if (startPoint != null) {
+          debugPrint("b4 changing start marker");
 
-        controller!.addMarker(startPoint!);
+          controller!.osmBaseController.changeMarker(
+            oldLocation: startPoint!,
+            newLocation: locations.first.point!,
+          );
+        } else {
+          debugPrint("b4 adding start marker");
+
+          startPoint = locations.first.point!;
+
+          controller!.osmBaseController.addMarker(startPoint!);
+        }
+
+        // controller!.osmBaseController.
+        // controller!.osmBaseController.changeLocation(startPoint!);
+        setState(() {});
         // drawRoute(GeoPoint(latitude: 48.8588443, longitude: 2.2943506), point);
       }
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
   showEndLocation(String loc) async {
+    debugPrint("showEndLocation");
+
     try {
-      if (endPoint != null) {
-        controller!.removeMarker(endPoint!);
-      }
       var locations = await addressSuggestion(loc);
       if (locations.isNotEmpty) {
-        endPoint = locations.first.point!;
-        controller!.addMarker(endPoint!);
-        drawRoute(startPoint!, endPoint!);
+        if (endPoint != null) {
+          debugPrint("b4 changing end marker");
+
+          controller!.osmBaseController.changeMarker(
+            oldLocation: endPoint!,
+            newLocation: locations.first.point!,
+          );
+        } else {
+          debugPrint("b4 adding end marker");
+
+          endPoint = locations.first.point!;
+
+          controller!.osmBaseController.addMarker(endPoint!);
+        }
       }
+      
+        drawRoute(startPoint!, endPoint!);
+      setState(() {});
+      
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
   void drawRoute(GeoPoint startPoint, GeoPoint endPoint) async {
     try {
-      await controller!.drawRoad(
+      await controller!.osmBaseController.drawRoad(
         startPoint,
         endPoint,
         // intersectPoint: [
@@ -83,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -95,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         bottomSheet: Container(
+          width: double.infinity,
           height: showExpandedSheet ? 200 : 100,
           padding: EdgeInsets.only(
             top: 25,
@@ -172,6 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body: controller == null
             ? const Center(child: CircularProgressIndicator())
             : OSMFlutter(
+                mapIsLoading: const Center(child: CircularProgressIndicator()),
                 controller: controller!,
                 osmOption: OSMOption(
                   // staticPoints: [
@@ -183,8 +212,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     unFollowUser: true,
                   ),
                   zoomOption: const ZoomOption(
-                    initZoom: 15,
-                    minZoomLevel: 3,
+                    initZoom: 17,
+                    minZoomLevel: 13,
                     maxZoomLevel: 19,
                     stepZoom: 1.0,
                   ),

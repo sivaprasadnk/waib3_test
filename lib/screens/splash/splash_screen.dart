@@ -58,33 +58,53 @@ class _SplashScreenState extends State<SplashScreen> {
               // right: 0,
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: 50,
-                child: const Center(
-                  child: LogoText(),
+                height: 150,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const LogoText(),
+                      const SizedBox(height: 50),
+                      AnimatedOpacity(
+                        duration: const Duration(milliseconds: 700),
+                        opacity: _fadeOutText ? 0.0 : 1.0,
+                        child: const Center(
+                          child: Text(
+                            'Get a new experience',
+                            style: TextStyle(
+                              color: kWhiteColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-            AnimatedOpacity(
-              duration: const Duration(milliseconds: 700),
-              opacity: _fadeOutText ? 0.0 : 1.0,
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 50),
-                  Center(
-                    child: Text(
-                      'Get a new experience',
-                      style: TextStyle(
-                        color: kWhiteColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // AnimatedOpacity(
+            //   duration: const Duration(milliseconds: 700),
+            //   opacity: _fadeOutText ? 0.0 : 1.0,
+            //   child: const Column(
+            //     crossAxisAlignment: CrossAxisAlignment.center,
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       SizedBox(height: 50),
+            //       Center(
+            //         child: Text(
+            //           'Get a new experience',
+            //           style: TextStyle(
+            //             color: kWhiteColor,
+            //             fontWeight: FontWeight.w500,
+            //             fontSize: 20,
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             AnimatedPositioned(
               duration: const Duration(seconds: 1),
               curve: Curves.easeInOut,
